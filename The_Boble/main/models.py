@@ -17,7 +17,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     user = models.ManyToManyField(User,related_name='user_recipes')
-    level = models.ForeignKey(Level, on_delete=models.SET_NULL,related_name='lvl_recipes')
+    level = models.ForeignKey(Level, on_delete=models.SET_NULL,related_name='lvl_recipes',null=True)
     level_of_torture = models.IntegerField()
     index_of_recipe = models.IntegerField()
     name = models.CharField(max_length=150)
