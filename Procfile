@@ -1,1 +1,1 @@
-web: gunicorn The_Boble.wsgi --log-file -
+web: gunicorn The_Boble.wsgi
