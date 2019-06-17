@@ -25,7 +25,7 @@ SECRET_KEY = 'uwi_&rf#1xmce@lw&i0!4o(ma4(c!v0@x%i22^b-$05c#)8zol'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://theboble.herokuapp.com/','localhost']
+ALLOWED_HOSTS = ['theboble.herokuapp.com','localhost']
 
 
 # Application definition
