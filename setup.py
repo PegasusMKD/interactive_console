@@ -12,12 +12,13 @@ def nth_index(iterable, value, n):
     return next(islice(matches, n-1, n), None)
 
 
-# def payload(url,payload={}):
-    # request = requests.post('http://127.0.0.1:8000/{}/'.format(url),header={'Content-Type' : 'application/json'},data=json.loads(payload))
+# def payload(url,path,payload={}):
+    # request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),header={'Content-Type' : 'application/json'},data=json.loads(payload))
     # return json.loads(request.content)
 
-def payload(url,payload={}):
-    request = requests.post('http://theboble.herokuapp.com/{}/'.format(url),header={'Content-Type' : 'application/json'},data=json.loads(payload))
+def payload(url,path,payload={}):
+    request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
+    print(request.content)
     return json.loads(request.content)
 
 """
@@ -31,7 +32,7 @@ def login():
         'username' : username,
         'password' : password
     }
-    response = payload('login',data)
+    response = payload('login','login',data)
 
     if 'token' in response.keys():
         print(response['response'])
@@ -56,7 +57,7 @@ def looking_up(look_up,token):
             'user_looking_for' : who_to_look_for,
             'token' : token
         }
-        response = payload('looking_for',data)
+        response = payload('login','looking_for',data)
 
         if response['response'][-1]:
             print(response['response'][0])
@@ -73,7 +74,7 @@ def looking_up(look_up,token):
         return True
 
     else:
-        response = payload('douche',token)
+        response = payload('login','douche',token)
         print(response['response'])
         looking_up(input('Now, be kind enough to give a proper answer :)\n(yes/no)'),token)
         return True
@@ -91,13 +92,13 @@ def offered_recipes(token,level,recognized=""):
             'level': level,
         }
 
-    return payload('offer_recipes', data)
+    return payload('main','offer_recipes', data)
 
 
 def get_level(token):
     print("What level would you like?")
     counter = 1
-    for x in payload('find_levels', {'token': token}):
+    for x in payload('main','find_levels', {'token': token}):
         print(str(counter) + x)
         counter += 1
 
@@ -110,7 +111,7 @@ def get_recipe(recipe,token):
         'token' : token,
         'recipe' : recipe
     }
-    return payload('find_recipe',data)
+    return payload('main','find_recipe',data)
 
 
 def parser(instructions):
