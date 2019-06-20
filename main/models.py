@@ -29,3 +29,9 @@ class Recipe(models.Model):
         null=True
     )
     instructions = models.TextField()
+
+    """
+    Example 1:
+    
+    
+    """

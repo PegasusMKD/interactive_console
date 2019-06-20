@@ -1,6 +1,11 @@
 upload to Github - Done
-uploading to Heroku
-Filling the database
+uploading to Heroku - Done
+Migrate database to Heroku - Done
+Filling the database - 1/2 Done(login)
+Filling the database - 1/2 (main) ( One done, should make an entire API for easier filling )
 setting up the script for usage on heroku
 testing the script
 debugging
+
+Bonus:
+    - API

@@ -31,7 +31,7 @@ def login(request):
             user.save(update_fields=['token'])
             return json.dumps({
                 'token' : user.token,
-                'response' : 'Wowie, u is a hackew i see UwU!'
+                'response' : 'Wowie, u is a hackew i see UwU!\n\n' + random.choice(user.intros).text
             })
         else:
             user.token = new_hash()

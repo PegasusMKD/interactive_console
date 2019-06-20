@@ -9,8 +9,8 @@ class User(models.Model):
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    looked_up = models.IntegerField()
-    recognized = models.CharField(max_length=30)
+    looked_up = models.IntegerField(null=True)
+    recognized = models.CharField(max_length=30,default='')
     token = models.CharField(max_length=30,default='')
     friends = ArrayField(
         models.CharField(max_length=75),
