@@ -12,22 +12,21 @@ def nth_index(iterable, value, n):
     return next(islice(matches, n-1, n), None)
 
 
-# def payload(url,path,payload={}):
-    # request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),header={'Content-Type' : 'application/json'},data=json.loads(payload))
-    # return json.loads(request.content)
-
 def payload(url,path,payload={}):
-    request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-    print(request.content)
+    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
     return json.loads(request.content)
+
+# def payload(url,path,payload={}):
+#     request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
+#     print(request.content)
+#     return json.loads(request.content)
 
 """
 Main functions
 """
-def login():
+def login(counter=0):
     username = input('Username:')
     password = input('Password:')
-    counter = 0
     data = {
         'username' : username,
         'password' : password
@@ -42,11 +41,11 @@ def login():
         print('Huh, did he forget to give you the username and password?')
         print('Aw shucks, but hey! You two are good friends, SURELY you can think of something')
         print('His mind is quite simple, think of something related to the two of you...')
-        login()
+        login(counter+1)
 
     else:
         print(response['response'])
-        login()
+        login(counter+1)
 
 
 
@@ -65,7 +64,7 @@ def looking_up(look_up,token):
         else:
             print(response[0])
             print("Want to try someone else?(yes/no)")
-            looking_up(input(),token)
+            looking_up(input(),{'token' : token})
 
         return True
 
@@ -74,9 +73,9 @@ def looking_up(look_up,token):
         return True
 
     else:
-        response = payload('login','douche',token)
+        response = payload('login','douche',{'token' : token})
         print(response['response'])
-        looking_up(input('Now, be kind enough to give a proper answer :)\n(yes/no)'),token)
+        looking_up(input('Now, be kind enough to give a proper answer :)\n(yes/no)'), token)
         return True
 
 def offered_recipes(token,level,recognized=""):
@@ -98,12 +97,18 @@ def offered_recipes(token,level,recognized=""):
 def get_level(token):
     print("What level would you like?")
     counter = 1
-    for x in payload('main','find_levels', {'token': token}):
-        print(str(counter) + x)
+    levels = payload('main','find_levels', {'token': token})['levels']
+    for x in levels:
+        print(str(counter) + '. ' + x)
         counter += 1
 
     level = input('Enter the level you\'d want:')
-    return level
+    if str.isdigit(level):
+        return levels[int(level)-1]
+    elif level in levels:
+        return level
+    else:
+        return False
 
 
 def get_recipe(recipe,token):
@@ -116,19 +121,39 @@ def get_recipe(recipe,token):
 
 def parser(instructions):
     new_instructions = list(instructions)
-    value = nth_index(new_instructions,'\n',2)
+    # value = nth_index(new_instructions,'\n',2)
+    # print(instructions.split(" "))
+    tmp_value = [instructions.split(" ").index(i) for i in instructions.split(" ") if i == "\n\n"][0]
+    value = len(''.join(instructions.split(" ")[:tmp_value]))
+    # print(value)
     print(''.join(new_instructions[:value]))
+    # print(len(new_instructions))
     new_instructions = new_instructions[value:]
-
-    for x in range(75,len(new_instructions),75):
-        if new_instructions[x] == ' ':
-            print(''.join(new_instructions[x-75,x]))
-        else:
-            new_instructions.insert(x,'-')
-            print(''.join(new_instructions[x-75,x]))
-        input()
-
+    # print(len(new_instructions))
+    sum = 0
+    try:
+        # print(new_instructions)
+        length = len(new_instructions)
+        if length % 75 != 0:
+            # print(length)
+            length -= length % 75
+            # print(length)
+            # print(length)
+            # print(new_instructions[:length])
+        for x in range(75,length+75,75):
+            sum += 75
+            if new_instructions[x-1] == ' ' or new_instructions[x-1] == '.':
+                print(''.join(new_instructions[x-75:x]))
+            else:
+                new_instructions.insert(x-1,'-')
+                print(''.join(new_instructions[x-75:x]))
+            input()
+        # print(new_instructions[length:-1])
+        print(''.join(new_instructions[length:-1]))
+    except:
+        return True
     return True
+
 
 def print_recipe(recipe):
     print("[Level: {}]".format(recipe['level']))
@@ -143,24 +168,15 @@ def actual_main(token):
     look_up = input()
     looked = looking_up(look_up, token)
 
-    if isinstance(looked, str):
-        level = get_level(token)
-        recipes = offered_recipes(token, level, looked)
-    else:
-        level = get_level(token)
-        recipes = offered_recipes(token, level)
+    recipes = offer_levels(looked, token)
 
     print(recipes['welcome_response'])
     counter = 1
     for x in recipes['response']:
-        print(str(counter) + x)
+        print(str(counter) + '. ' + x)
         counter += 1
 
-    recipe_name = input("What shall we have:")
-    if str.isdigit(recipe_name):
-        recipe = get_recipe(recipes[int(recipe_name) - 1], token)
-    else:
-        recipe = get_recipe(recipe_name, token)
+    recipe = recipes_loop(recipes, token)
 
     finished = print_recipe(recipe)
     if finished:
@@ -170,6 +186,44 @@ def actual_main(token):
         else:
             print("Thank you for coming, hope we see you back soon!")
             time.sleep(30)
+
+
+def recipes_loop(recipes, token):
+    recipe_name = input("What shall we have:")
+    print(recipe_name in recipes['response'])
+    if str.isdigit(recipe_name):
+        recipe = get_recipe(recipes['response'][int(recipe_name) - 1], token)
+    elif recipe_name in recipes['response']:
+        recipe = get_recipe(recipe_name, token)
+    else:
+        print("Not a shmart move, i must say...")
+        recipe = recipes_loop(recipes,token)
+    return recipe
+
+
+def offer_levels(looked, token):
+    if isinstance(looked, str):
+        level = get_level(token)
+        if level is not False:
+            recipes = offered_recipes(token, level, looked)
+            if not isinstance(recipes['response'],list):
+                print(recipes['response'])
+                offer_levels(looked,token)
+        else:
+            offer_levels(looked,token)
+
+    else:
+        level = get_level(token)
+        if level is not False:
+            recipes = offered_recipes(token, level)
+            if not isinstance(recipes['response'],list):
+                print(recipes['response'])
+                offer_levels(looked,token)
+        else:
+            offer_levels(looked,token)
+
+    return recipes
+
 
 def main():
     print('Why hello there, i see you\'re a close friend of Pazzio\'s!')

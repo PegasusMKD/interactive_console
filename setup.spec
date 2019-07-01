@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['setup.py'],
-             pathex=['D:\\Python\\The_Boble\\The_Boble'],
+             pathex=['E:\\Main\\new laptop\\Python\\The_Boble\\The_Boble'],
              binaries=[],
              datas=[],
              hiddenimports=[],

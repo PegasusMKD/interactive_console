@@ -6,10 +6,10 @@ from .main_funcs import *
 
 
 def login(request):
-    return HttpResponse(login(request))
+    return HttpResponse(try_login(request))
 
 def looking_up(request):
     return HttpResponse(looking_for(request))
 
 def douche_response(request):
-    return HttpResponse(json.loads(douche_response(request)))
+    return HttpResponse(json.dumps(douchy_response(request)))

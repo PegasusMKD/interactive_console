@@ -15,7 +15,7 @@ def new_hash(size=26, chars=string.ascii_letters + string.digits):
 Main functions
 """
 
-def login(request):
+def try_login(request):
     req = json.loads(request.body)
     try:
         user = User.objects.get(username=req['username'])
@@ -31,14 +31,14 @@ def login(request):
             user.save(update_fields=['token'])
             return json.dumps({
                 'token' : user.token,
-                'response' : 'Wowie, u is a hackew i see UwU!\n\n' + random.choice(user.intros).text
+                'response' : 'Wowie, u is a hackew i see UwU!\n\n' + random.choice(user.intros.all()).text
             })
         else:
             user.token = new_hash()
             user.save(update_fields=['token'])
             return json.dumps({
                 'token': user.token,
-                'response': random.choice(user.intros).text
+                'response': random.choice(user.intros.all()).text
             })
 
     else:
@@ -56,15 +56,17 @@ def looking_for(request):
         user_looking_for.recognized = new_hash()
         user_looking_for.save(['looked_up','recognized'])
     except:
-        return json.loads({
+        return json.dumps({
             'response' : [random.choice(user.failed.filter(type='not_found')).text,False]
         })
 
-    return json.loads({
+    return json.dumps({
         'response' : [random.choice(user.responses).text,user_looking_for.recognized,True]
     })
 
-def douche_response(request):
+def douchy_response(request):
     req = json.loads(request.body)
-    user = User.objects.get(token=req['token'])
-    return random.choice(user.failed.filter(type='smartass')).text
+    user = User.objects.get(token=str(req['token']))
+    return {
+        'response' : random.choice(user.failed.filter(type='smartass')).text
+    }
