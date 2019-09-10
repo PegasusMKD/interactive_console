@@ -2,6 +2,7 @@ from .models import *
 import json
 import string
 import random
+import os
 
 """
 Extras
@@ -9,6 +10,19 @@ Extras
 
 def new_hash(size=26, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+
+def back_up_from_server():
+    folder = "back/testing/"
+    try:
+        os.makedirs(folder)
+    except:
+        pass
+
+    User.objects.to_csv(folder + "user.csv",encoding='utf-8')
+    Intro.objects.to_csv(folder + "intro.csv",encoding='utf-8')
+    Failed.objects.to_csv(folder + "failed.csv",encoding='utf-8')
+    Responses.objects.to_csv(folder + "responses.csv",encoding='utf-8')
 
 
 """

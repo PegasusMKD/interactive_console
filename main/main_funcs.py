@@ -59,6 +59,19 @@ $ - ingredients so that $1 is the first ingredient, $3 is the third ingredient
 Extras
 """
 
+def back_up_from_server():
+    folder = "back/testing/"
+    try:
+        os.makedirs(folder)
+    except:
+        pass
+
+    Level.objects.to_csv(folder + "level.csv",encoding='utf-8')
+    Category.objects.to_csv(folder + "category.csv",encoding='utf-8')
+    Ingredient.objects.to_csv(folder + "ingredient.csv",encoding='utf-8')
+    Recipe.objects.to_csv(folder + "recipe.csv",encoding='utf-8')
+
+
 def replacer(to_replace,friends=[],ingredients=[],bob="",user=""):
     string = ""
     print(friends)

@@ -12,14 +12,14 @@ def nth_index(iterable, value, n):
     return next(islice(matches, n-1, n), None)
 
 
-def payload(url,path,payload={}):
-    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-    return json.loads(request.content)
+#def payload(url,path,payload={}):
+#    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
+#    return json.loads(request.content)
 
-# def payload(url,path,payload={}):
-#     request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-#     print(request.content)
-#     return json.loads(request.content)
+def payload(url,path,payload={}):
+     request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
+     print(request.content)
+     return json.loads(request.content)
 
 """
 Main functions
