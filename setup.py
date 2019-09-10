@@ -3,6 +3,7 @@ import json
 from itertools import islice
 import time
 
+import msvcrt as m
 
 """
 Extras
@@ -11,19 +12,22 @@ def nth_index(iterable, value, n):
     matches = (idx for idx, val in enumerate(iterable) if val == value)
     return next(islice(matches, n-1, n), None)
 
-
-#def payload(url,path,payload={}):
-#    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-#    return json.loads(request.content)
+def wait():
+    m.getch()
 
 def payload(url,path,payload={}):
      request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
      #print(request.content)
      return json.loads(request.content)
 
+#def payload(url,path,payload={}):
+#    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
+#    return json.loads(request.content)
+
 """
 Main functions
 """
+
 def login(counter=0):
     username = input('Username:')
     password = input('Password:')
@@ -63,9 +67,10 @@ def looking_up(look_up,token):
             print(response['response'][0])
             return response['response'][1]
         else:
-            print(response[0])
+            print(response['response'][0])
+            print()
             print("Want to try someone else?(yes/no)")
-            looking_up(input(),{'token' : token})
+            looking_up(input(),token)
 
         return True
 
@@ -95,17 +100,26 @@ def offered_recipes(token,level,recognized=""):
     return payload('main','offer_recipes', data)
 
 
-def get_level(token):
+def get_level(token,last_levels = []):
     print("What level would you like?")
     counter = 1
-    levels = payload('main','find_levels', {'token': token})['levels']
+    if last_levels == []:
+        levels = payload('main','find_levels', {'token': token})['levels']
+    else: 
+        levels = last_levels
+
     for x in levels:
         print(str(counter) + '. ' + x)
         counter += 1
 
     level = input('Enter the level you\'d want:')
     if str.isdigit(level):
-        return levels[int(level)-1]
+        if int(level) > len(levels):
+            print("Alo shmekeri, ona nije moja!")
+            return get_level(token,levels)
+        else:
+            return levels[int(level)-1]
+
     elif level in levels:
         return level
     else:
@@ -138,7 +152,7 @@ def parser(instructions):
             else:
                 new_instructions.insert(x-1,'-')
                 print(''.join(new_instructions[x-75:x]))
-            input()
+            wait()
 
         print(''.join(new_instructions[length:-1]))
     except:
@@ -176,7 +190,7 @@ def actual_main(token):
     print()
 
     if finished:
-        another = input("Want to go again?")
+        another = input("Want to go again? (yes/no)\n")
         if another.lower() == 'yes':
             actual_main(token)
         else:
@@ -188,7 +202,13 @@ def recipes_loop(recipes, token):
     recipe_name = input("What shall we have:")
     #print(recipe_name in recipes['response'])
     if str.isdigit(recipe_name):
-        recipe = get_recipe(recipes['response'][int(recipe_name) - 1], token)
+        if int(recipe_name) > len(recipes['response']):
+            print("Nice tryy ~(0.0)~")
+            recipe = recipes_loop(recipes,token)
+
+        else:
+            recipe = get_recipe(recipes['response'][int(recipe_name) - 1], token)
+
     elif recipe_name in recipes['response']:
         recipe = get_recipe(recipe_name, token)
     else:
@@ -199,14 +219,15 @@ def recipes_loop(recipes, token):
 
 def offer_levels(looked, token):
     if isinstance(looked, str):
+
         level = get_level(token)
         if level is not False:
             recipes = offered_recipes(token, level, looked)
             if not isinstance(recipes['response'],list):
                 print(recipes['response'])
-                offer_levels(looked,token)
+                return offer_levels(looked,token)
         else:
-            offer_levels(looked,token)
+            return offer_levels(looked,token)
 
     else:
         level = get_level(token)
@@ -214,9 +235,9 @@ def offer_levels(looked, token):
             recipes = offered_recipes(token, level)
             if not isinstance(recipes['response'],list):
                 print(recipes['response'])
-                offer_levels(looked,token)
+                return offer_levels(looked,token)
         else:
-            offer_levels(looked,token)
+            return offer_levels(looked,token)
 
     return recipes
 
