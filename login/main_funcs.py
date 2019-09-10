@@ -80,7 +80,7 @@ def looking_for(request):
             'response' : [random.choice(user.responses.all()).text,user_looking_for.recognized,True]
         })
     except:
-        print(traceback.from_exc())
+        print(traceback.format_exc())
 
 
 def douchy_response(request):
