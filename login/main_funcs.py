@@ -3,6 +3,7 @@ import json
 import string
 import random
 import os
+import traceback
 
 """
 Extras
@@ -62,21 +63,25 @@ def try_login(request):
 
 
 def looking_for(request):
-    req = json.loads(request.body)
-    user = User.objects.get(token=req['token'])
     try:
-        user_looking_for = User.objects.get(name=req['user_looking_for'])
-        user_looking_for.looked_up += 1
-        user_looking_for.recognized = new_hash()
-        user_looking_for.save(['looked_up','recognized'])
-    except:
-        return json.dumps({
-            'response' : [random.choice(user.failed.filter(type='not_found')).text,False]
-        })
+        req = json.loads(request.body)
+        user = User.objects.get(token=req['token'])
+        try:
+            user_looking_for = User.objects.get(name=req['user_looking_for'])
+            user_looking_for.looked_up += 1
+            user_looking_for.recognized = new_hash()
+            user_looking_for.save(['looked_up','recognized'])
+        except:
+            return json.dumps({
+                'response' : [random.choice(user.failed.filter(type='not_found')).text,False]
+            })
 
-    return json.dumps({
-        'response' : [random.choice(user.responses).text,user_looking_for.recognized,True]
-    })
+        return json.dumps({
+            'response' : [random.choice(user.responses).text,user_looking_for.recognized,True]
+        })
+    except:
+        print(traceback.from_exc())
+
 
 def douchy_response(request):
     req = json.loads(request.body)

@@ -97,7 +97,6 @@ def replacer(to_replace,friends=[],ingredients=[],bob="",user=""):
                 string += "\n\n " + x + " "
                 switcher=False
 
-
         elif x==">" or second_switcher is True:
             if second_switcher is False:
                 second_switcher = True

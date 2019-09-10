@@ -18,7 +18,7 @@ def nth_index(iterable, value, n):
 
 def payload(url,path,payload={}):
      request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-     print(request.content)
+     #print(request.content)
      return json.loads(request.content)
 
 """
@@ -32,20 +32,21 @@ def login(counter=0):
         'password' : password
     }
     response = payload('login','login',data)
-
+    
     if 'token' in response.keys():
         print(response['response'])
+        print()
         return [True,response['token']]
 
     elif counter == 0:
         print('Huh, did he forget to give you the username and password?')
         print('Aw shucks, but hey! You two are good friends, SURELY you can think of something')
         print('His mind is quite simple, think of something related to the two of you...')
-        login(counter+1)
+        return login(counter+1)
 
     else:
         print(response['response'])
-        login(counter+1)
+        return login(counter+1)
 
 
 
@@ -121,25 +122,15 @@ def get_recipe(recipe,token):
 
 def parser(instructions):
     new_instructions = list(instructions)
-    # value = nth_index(new_instructions,'\n',2)
-    # print(instructions.split(" "))
     tmp_value = [instructions.split(" ").index(i) for i in instructions.split(" ") if i == "\n\n"][0]
     value = len(''.join(instructions.split(" ")[:tmp_value]))
-    # print(value)
-    print(''.join(new_instructions[:value]))
-    # print(len(new_instructions))
+    #print(''.join(new_instructions[:value]))
     new_instructions = new_instructions[value:]
-    # print(len(new_instructions))
     sum = 0
     try:
-        # print(new_instructions)
         length = len(new_instructions)
         if length % 75 != 0:
-            # print(length)
             length -= length % 75
-            # print(length)
-            # print(length)
-            # print(new_instructions[:length])
         for x in range(75,length+75,75):
             sum += 75
             if new_instructions[x-1] == ' ' or new_instructions[x-1] == '.':
@@ -148,7 +139,7 @@ def parser(instructions):
                 new_instructions.insert(x-1,'-')
                 print(''.join(new_instructions[x-75:x]))
             input()
-        # print(new_instructions[length:-1])
+
         print(''.join(new_instructions[length:-1]))
     except:
         return True
@@ -161,15 +152,17 @@ def print_recipe(recipe):
     print("Recipe {}: {}".format(recipe['index_of_recipe'],recipe['recipe_name']))
     print("[Ingredients]")
     parser(recipe['instructions'])
+    return True
 
 
 def actual_main(token):
     print('Would you like to take a look at someone specific?(yes/no)')
     look_up = input()
     looked = looking_up(look_up, token)
-
+    print()
     recipes = offer_levels(looked, token)
-
+    print()
+    #print(recipes)
     print(recipes['welcome_response'])
     counter = 1
     for x in recipes['response']:
@@ -177,8 +170,11 @@ def actual_main(token):
         counter += 1
 
     recipe = recipes_loop(recipes, token)
+    print()
 
     finished = print_recipe(recipe)
+    print()
+
     if finished:
         another = input("Want to go again?")
         if another.lower() == 'yes':
@@ -190,7 +186,7 @@ def actual_main(token):
 
 def recipes_loop(recipes, token):
     recipe_name = input("What shall we have:")
-    print(recipe_name in recipes['response'])
+    #print(recipe_name in recipes['response'])
     if str.isdigit(recipe_name):
         recipe = get_recipe(recipes['response'][int(recipe_name) - 1], token)
     elif recipe_name in recipes['response']:
