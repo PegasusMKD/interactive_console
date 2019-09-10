@@ -3,4 +3,4 @@ Django==2.1.2
 dj_database_url==0.5.0
 gunicorn==19.7.1
 psycopg2==2.8.2
-postgres_copy
+django-postgres-copy
