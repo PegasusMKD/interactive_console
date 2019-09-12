@@ -28,9 +28,14 @@ class UserAPI:
             return UserAPI.check_answer()
         
 
-    def delete(class_type,text,*users,type=""):
-        if type == "":
-            type = UserAPI.check_answer()
+    def delete(class_type,text,*users):
+        #if type == "":
+        #    type = UserAPI.check_answer()
+
+        if users == ():
+            type = "delete"
+        else:
+            type = "unpair"
         
         print(f"MODE:{type.upper()}")
         objects = class_type.objects.filter(text__startswith=text)
