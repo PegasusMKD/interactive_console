@@ -21,6 +21,7 @@ class User(models.Model):
         blank=True
     )
 
+
 class Intro(models.Model):
     objects = CopyManager()
     text = models.CharField(max_length=150)
