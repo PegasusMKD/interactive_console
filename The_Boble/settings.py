@@ -76,27 +76,27 @@ WSGI_APPLICATION = 'The_Boble.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-         'NAME': 'bober',
-         'USER': 'bober',
-         'PASSWORD': 'bob',
-         'HOST': 'localhost',
-         'PORT': '5432'
-     }
- }
-
 #DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        'NAME': 'df0r6n11urqna9',
-#        'USER': 'kjjpylscrykizv',
-#        'PASSWORD': 'd45c68db09282d077b3d45c67cd8328771400ed0b8f2b7248dd73e611c19d335',
-#        'HOST': 'ec2-75-101-128-10.compute-1.amazonaws.com',
-#        'PORT': '5432'
-#    }
-#}
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'bober',
+#         'USER': 'bober',
+#         'PASSWORD': 'bob',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'df0r6n11urqna9',
+        'USER': 'kjjpylscrykizv',
+        'PASSWORD': 'd45c68db09282d077b3d45c67cd8328771400ed0b8f2b7248dd73e611c19d335',
+        'HOST': 'ec2-75-101-128-10.compute-1.amazonaws.com',
+        'PORT': '5432'
+    }
+}
 
 
 
