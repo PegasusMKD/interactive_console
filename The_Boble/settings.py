@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['theboble.herokuapp.com','127.0.0.1']
 INSTALLED_APPS = [
     'main',
     'login',
+    'game',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'The_Boble.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,"static")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,6 +138,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = '/Main/new laptop/Python/The_Boble/The_Boble/static'
+
+STATICFILES_DIRS = ("E:\Main/new laptop/Python/The_Boble/The_Boble/game/templates",)
 
 import dj_database_url
 prod_db  =  dj_database_url.config(conn_max_age=500)

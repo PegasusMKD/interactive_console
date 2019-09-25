@@ -1,4 +1,5 @@
 from .models import *
+from game.models import GameUser
 import json
 import string
 import random
@@ -35,30 +36,37 @@ def try_login(request):
     try:
         user = User.objects.get(username=req['username'])
     except:
-        return json.dumps({
+        try:
+            user = GameUser.objects.get(username=req['username'])
+        except:
+            return json.dumps({
             'response' : random.choice(Failed.objects.filter(type='username')).text   #'Утнат user, sowwie >,<'
-        })
+            })
+
+    failed_passwords = user.game_failed.filter(type='password') if type(user) is GameUser else user.failed.filter(type='password')
 
     if user.password == req['password']:
-
+        intros = user.game_intros.all() if type(user) is GameUser else user.intros.all()
         if user.token == '':
             user.token = new_hash()
             user.save(update_fields=['token'])
             return json.dumps({
                 'token' : user.token,
-                'response' : 'Wowie, u is a hackew i see UwU!\n\n' + random.choice(user.intros.all()).text
+                'type' : 'game' if type(user) is GameUser else 'bob',
+                'response' : 'Wowie, u is a hackew i see UwU!\n\n' + random.choice(intros).text
             })
         else:
             user.token = new_hash()
             user.save(update_fields=['token'])
             return json.dumps({
-                'token': user.token,
-                'response': random.choice(user.intros.all()).text
+                'token' : user.token,
+                'type' : 'game' if type(user) is GameUser else 'bob',
+                'response' : random.choice(intros).text
             })
 
     else:
         return json.dumps({
-            'response': random.choice(user.failed.filter(type='password')).text
+            'response': random.choice(failed_passwords).text
         })
 
 
@@ -85,7 +93,13 @@ def looking_for(request):
 
 def douchy_response(request):
     req = json.loads(request.body)
-    user = User.objects.get(token=str(req['token']))
+    try:
+        user = User.objects.get(token=str(req['token']))
+    except:
+        user = GameUser.objects.get(token=str(req['token']))
+
+    smartass_fails = user.game_failed.filter(type='smartass') if user is GameUser else user.failed.filter(type='smartass')
+
     return {
-        'response' : random.choice(user.failed.filter(type='smartass')).text
+        'response' : random.choice(smartass_fails).text
     }

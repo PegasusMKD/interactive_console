@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+{%load static%}
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'game/style.css' %}" type="text/css">
+    <meta charset="utf-8" />
+    <title>{{exercise.title}}</title>
+</head>
+
+<body>
+    <hr />
+    <div id="intro">
+        <h1>{{exercise.title}}</h1>
+        <h3><pre>{{exercise.description}}</pre></h3>
+        <br />
+    </div>
+    <hr />
+    <div class="code">
+        <code><i><pre>{{exercise.sample_code}}</pre></i></code>
+        <br />
+    </div>
+
+    {% if exercise.solved %}
+    <pre>Your Reward: {{exercise.reward}}</pre>
+    {%else%}
+    <form action="/game/exercise/{{answer}}/" method="post" name="answer">
+        <input type="hidden" name="exercise" value="{{exercise.title}}" />
+        <label for="answer"><b>The Answer:</b></label>
+        <input type="text" name="answer" />
+        <input type="submit" value="Submit" />
+
+    </form>
+    {%endif%}
+
+
+
+</body>
+</html>

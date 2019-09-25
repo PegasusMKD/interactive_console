@@ -40,7 +40,7 @@ def login(counter=0):
     if 'token' in response.keys():
         print(response['response'])
         print()
-        return [True,response['token']]
+        return [True,response['token'],response['type']]
 
     elif counter == 0:
         print('Huh, did he forget to give you the username and password?')
@@ -246,8 +246,35 @@ def main():
     print('Why hello there, i see you\'re a close friend of Pazzio\'s!')
     details = login()
     token = details[1]
+    type = details[2]
     if details[0]:
-        actual_main(token)
-
+        if type == "bob":
+            actual_main(token)
+        elif type == "game":
+            pass
 
 main()
+
+def game_main(token):
+    recipes = offer_levels(looked, token)
+    print()
+    #print(recipes)
+    print(recipes['welcome_response'])
+    counter = 1
+    for x in recipes['response']:
+        print(str(counter) + '. ' + x)
+        counter += 1
+
+    recipe = recipes_loop(recipes, token)
+    print()
+
+    finished = print_recipe(recipe)
+    print()
+
+    if finished:
+        another = input("Want to go again? (yes/no)\n")
+        if another.lower() == 'yes':
+            actual_main(token)
+        else:
+            print("Thank you for coming, hope we see you back soon!")
+            time.sleep(30)

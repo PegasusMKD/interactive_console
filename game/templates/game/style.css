@@ -1,0 +1,28 @@
+﻿body {
+    margin-top : 2%;
+    margin-left : 2%;
+    background-color : rgb(200, 134, 134);
+}
+
+#intro h3 {
+    margin-left : 3%;
+}
+
+hr {
+    border: 2px solid black;
+    margin-left: -2%;
+}
+.code {
+    border: 1px solid black;
+    padding: 1%;
+    width: 30%;
+    tab-size : 4;
+}
+
+.code code {
+    font-size : 15px;
+}
+
+form { 
+    margin-top: 2%;
+}

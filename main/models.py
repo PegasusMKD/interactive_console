@@ -9,6 +9,8 @@ from postgres_copy import CopyManager
 class Level(models.Model):
     objects = CopyManager()
     name = models.CharField(max_length=75)  #Dodadi easter egg (woops, broke the damn server cause it was worse than hell...)
+    max_level = models.IntegerField(null=True)
+    min_level = models.IntegerField(null=True)
 
 class Category(models.Model):
     objects = CopyManager()

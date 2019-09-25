@@ -1,0 +1,27 @@
+Chapter 1: Hollow Knight
+AWESD
+THE PYTHON EXERCISE
+....
+This is a demo
+//
+<sample code goes here>
+ANSWER
+italian
+REWARD
+www.facebook.com
+BBNO$
+Chapter 3: Hollow Knight
+AWESD
+Wowza
+....
+Trying it out
+//
+print("Happy boy")
+
+ANSWER
+Happy boy
+REWARD
+www.instagram.com
+BBNO$
+.
+

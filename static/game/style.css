@@ -1,0 +1,13 @@
+﻿body {
+    margin-top : 2%;
+    margin-left : 2%;
+    background-color : rgba(191, 189, 189, 0.92);
+}
+
+#intro h3 {
+    margin-left: 3%;
+}
+
+#code {
+    margin-left: 5%;
+}
