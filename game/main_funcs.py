@@ -73,6 +73,8 @@ def retrieve_options(request):
         }
     return response
 
+def return_int(val):
+    return int(val.split(" ")[1])
 
 def retrieve_chapters(request):
     req = json.loads(request.body)
@@ -80,7 +82,7 @@ def retrieve_chapters(request):
     option = user.options.get(title=req['option'])
     response = {
         'welcome_response' : random.choice(user.game_intros.all()).text,
-        'response' : [x.title for x in option.chapters.all()],
+        'response' : [x.title for x in list(option.chapters.all()).sort(key=return_int)],
         }
     return response
 

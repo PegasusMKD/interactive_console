@@ -5,6 +5,10 @@ import time
 
 import msvcrt as m
 
+import warnings
+from urllib3.exceptions import  InsecureRequestWarning
+warnings.simplefilter('ignore',InsecureRequestWarning)
+
 """
 Extras
 """
@@ -15,14 +19,14 @@ def nth_index(iterable, value, n):
 def wait():
     m.getch()
 
-#def payload(url,path,payload={}):
-#     request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-#     #print(request.content)
-#     return json.loads(request.content)
-
 def payload(url,path,payload={}):
-    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
-    return json.loads(request.content)
+     request = requests.post('https://theboble.herokuapp.com/{}/{}/'.format(url,path),headers={'content-type' : 'application/json'},data=json.dumps(payload))
+     #print(request.content)
+     return json.loads(request.content)
+
+#def payload(url,path,payload={}):
+#    request = requests.post('http://127.0.0.1:8000/{}/{}/'.format(url,path),headers={'Content-Type' : 'application/json'},data=json.dumps(payload))
+#    return json.loads(request.content)
 
 """
 Main functions
