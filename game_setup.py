@@ -96,6 +96,9 @@ def get_chapters(token,option):
 
     return payload('game','get_chapters', data)
 
+def return_int(val):
+    print(int(val.split(" ")[1][0]))
+    return int(val.split(" ")[1][0])
 
 def get_options(token,last_options = []):
     print("What option would you like?")
@@ -188,7 +191,7 @@ def actual_main(token):
     print()
     print(chapters['welcome_response'])
     counter = 1
-    for x in chapters['response']:
+    for x in chapters['response'].sort(key=return_int):
         print(str(counter) + '. ' + x)
         counter += 1
 
