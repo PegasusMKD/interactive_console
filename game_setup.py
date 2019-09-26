@@ -57,37 +57,6 @@ def login(counter=0):
         return login(counter+1)
 
 
-
-def looking_up(look_up,token):
-    if look_up.lower() == 'yes':
-        who_to_look_for = input('Please enter their name:')
-        data = {
-            'user_looking_for' : who_to_look_for,
-            'token' : token
-        }
-        response = payload('login','looking_for',data)
-
-        if response['response'][-1]:
-            print(response['response'][0])
-            return response['response'][1]
-        else:
-            print(response['response'][0])
-            print()
-            print("Want to try someone else?(yes/no)")
-            looking_up(input(),token)
-
-        return True
-
-    elif look_up.lower() == 'no':
-        print('Okie, your choice!')
-        return True
-
-    else:
-        response = payload('login','douche',{'token' : token})
-        print(response['response'])
-        looking_up(input('Now, be kind enough to give a proper answer :)\n(yes/no)'), token)
-        return True
-
 def get_chapters(token,option):
     data = {
             'token' : token,
@@ -97,7 +66,6 @@ def get_chapters(token,option):
     return payload('game','get_chapters', data)
 
 def return_int(val):
-    print(int(val.split(" ")[1][0]))
     return int(val.split(" ")[1][0])
 
 def get_options(token,last_options = []):
@@ -114,9 +82,9 @@ def get_options(token,last_options = []):
 
     option = input('Enter the option you\'d want:')
     if str.isdigit(option):
-        if int(option) > len(options):
+        if 0 < int(option) > len(options):
             print("Alo shmekeri, ona nije moja!")
-            return get_option(token,options)
+            return get_options(token,options)
         else:
             return options[int(option)-1]
 
@@ -135,33 +103,27 @@ def get_chapter(chapter, option, token):
     return payload('game','get_chapter',data)
 
 
-def parser(instructions):
-    if len(instructions) < 75:
-        print(instructions)
-        return True
-
-    new_instructions = list(instructions)
-    #tmp_value = [instructions.split(" ").index(i) for i in instructions.split(" ") if i == "\n\n"][0]
-    #value = len(''.join(instructions.split(" ")[:tmp_value]))
-    ##print(''.join(new_instructions[:value]))
-    #new_instructions = new_instructions[value:]
-    sum = 0
-    try:
-        length = len(new_instructions)
-        if length % 75 != 0:
-            length -= length % 75
-        for x in range(75,length+75,75):
-            sum += 75
-            if new_instructions[x-1] == ' ' or new_instructions[x-1] == '.':
-                print(''.join(new_instructions[x-75:x]))
-            else:
-                new_instructions.insert(x-1,'-')
-                print(''.join(new_instructions[x-75:x]))
+def new_parser(instructions):
+    tmp_list = instructions.split(" ")
+    line = []
+    counter = 0
+    for word in tmp_list:
+        if '\n' in word:
+            line.append(word)
+            print(' '.join(line))
+            counter = 0
+            line =[]
             wait()
-
-        print(''.join(new_instructions[length:-1]))
-    except:
-        return True
+        elif counter <= 65:
+            line.append(word)
+            counter += len(word)
+        else:
+            line.append(word)
+            print(' '.join(line))
+            counter = 0
+            line = []
+            wait()
+    print(' '.join(line))
     return True
 
 
@@ -173,16 +135,17 @@ def got_correct(token):
     return payload('game', 'got_correct', data)
 
 def print_chapter(token, chapter):
-    bar = '=' * 75
+    bar = '=' * 85
     bar = list(bar)
     for idx,character in enumerate([' '] + list(chapter['title']) + [' ']):
         bar[8+idx] = character
 
     print(''.join(bar) + '\n')
-    parser(chapter['text'])
-    answer = input(chapter['question'] + "\n").lower()
+    new_parser(chapter['text'])
+    answer = input("\nQuestion: " + chapter['question'] + "\n").capitalize()
     if answer == chapter['answer'].lower():
-        print(got_correct(token))
+        print(got_correct(token)['response'])
+
     return True
 
 
@@ -191,13 +154,15 @@ def actual_main(token):
     print()
     print(chapters['welcome_response'])
     counter = 1
-    for x in chapters['response'].sort(key=return_int):
+    if option != "Rules":
+        chapters['response'] = sorted(chapters['response'],key=return_int)
+
+    for x in chapters['response']:
         print(str(counter) + '. ' + x)
         counter += 1
 
     chapter = chapters_loop(chapters, option, token)
     print()
-    print(chapter)
     finished = print_chapter(token, chapter)
     print()
 
@@ -212,11 +177,10 @@ def actual_main(token):
 
 def chapters_loop(chapters, option, token):
     chapter_name = input("What shall we have:")
-    #print(chapter_name in recipes['response'])
     if str.isdigit(chapter_name):
-        if 0 > int(chapter_name) > len(chapters['response']):
+        if 0 < int(chapter_name) > len(chapters['response']):
             print("Nice tryy ~(0.0)~")
-            chapter = chapters_loop(chapters,token)
+            chapter = chapters_loop(chapters, option, token)
 
         else:
             chapter = get_chapter(chapters['response'][int(chapter_name) - 1], option, token)

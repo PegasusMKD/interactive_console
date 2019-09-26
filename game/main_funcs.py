@@ -73,8 +73,7 @@ def retrieve_options(request):
         }
     return response
 
-def return_int(val):
-    return int(val.split(" ")[1][0])
+
 
 def retrieve_chapters(request):
     req = json.loads(request.body)
