@@ -5,6 +5,7 @@
 *          text=auto
 build/* linguist-vendored
 dist/* linguist-vendored
+static/admin/* linguist-vendored
 
 #
 # The above will handle all files NOT found below
