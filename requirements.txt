@@ -1,5 +1,5 @@
 requests==2.21.0
-Django==2.2.5
+Django==2.2.8
 dj_database_url==0.5.0
 gunicorn==19.7.1
 psycopg2==2.8.2
